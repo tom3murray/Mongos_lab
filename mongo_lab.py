@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov  9 17:17:13 2022
-
-@author: thomasmurray
-"""
-
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
