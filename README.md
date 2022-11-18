@@ -1,2 +1,2 @@
 # Mongos_lab
-My partner for this lab is Brett Carey
+# This lab is for Tommy Murray and Brett Carey
