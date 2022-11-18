@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import pymongo
 
 # Read in data associating zipcodes with lat/long coordinates. The file
 # must be downloaded locally and is available on Git. The data was obtained from
@@ -38,12 +40,12 @@ temps = [t.get_text() for t in seven_day.select('.tombstone-container .temp')]
 descs = [d['title'] for d in seven_day.select('.tombstone-container img')]
 
 # Create a dataframe containing the 7-day forecast
-weather = pd.DataFrame({
+weather = {
     'period': periods,
     'short_desc': short_descs,
     'temp': temps,
     'desc': descs
-})
+}
 
 # Display to user the forecast for each day
 for each in descs:
@@ -65,9 +67,24 @@ print('The current dew point is', dew_point)
 print('The current conditions were last updated', last_update)
 
 # Create a dataframe containing the current conditions
-conditions = pd.DataFrame({
+conditions = {
     'humidity': [humidity],
     'wind speed': [wind_speed],
     'dew point': [dew_point],
     'last update': [last_update]
-})
+}
+
+# Connect to MongoDB
+host_name = "localhost"
+port = "27017"
+conn_str = {
+    "local" : f"mongodb://{host_name}:{port}/",
+}
+client = pymongo.MongoClient(conn_str["local"])
+
+# Store forecast and conditions in Mongo
+db = client["weather"]
+forecasts = db.forecast
+forecasts_id = forecasts.insert_one(weather).inserted_id
+current_conditions = db.current_conditions
+current_conditions_id = current_conditions.insert_one(conditions).inserted_id
